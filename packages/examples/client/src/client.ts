@@ -59,7 +59,7 @@ monaco.editor.create(document.getElementById("container")!, {
         value,
         "java",
         monaco.Uri.parse(
-            "file:///home/ib-developer/Documents/clonningFolders/TypeFox_monaco-languageclient/monaco-languageclient/packages/examples/react-client/src/HelloWorld.java"
+            "file://C:/Temp/monaco-language-java/packages/examples/react-client/src/HelloWorld.java"
         )
     ),
     glyphMargin: true,

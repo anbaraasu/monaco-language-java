@@ -15,6 +15,7 @@ import "monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneCom
 import "monaco-editor/esm/vs/editor/standalone/browser/quickInput/standaloneQuickInputService.js"
 import "monaco-editor/esm/vs/editor/standalone/browser/referenceSearch/standaloneReferenceSearch.js"
 import "monaco-editor/esm/vs/editor/standalone/browser/toggleHighContrast/toggleHighContrast.js"
+//import "@monaco-editor/esm/vs/editor/standalone/browser/codeAction/codeActionContributions.js"
 
 import {
   CloseAction,
@@ -91,6 +92,7 @@ const MonacoEditor = ({ filePath }: Props) => {
 }`
   const [codeError, setCodeError] = useState(false)
   const [code, setCode] = useState(codestr)
+  const [isLoading, setIsLoading] = useState(false); // Add this line
   const onMount = (editor, monacoInstance) => {
     monacoInstance.languages.register({
       id: "java",
@@ -106,15 +108,18 @@ const MonacoEditor = ({ filePath }: Props) => {
     createWebSocket(url)
   }, [])
   const editorCustomOptions = {
+    acceptSuggestionOnEnter: 'smart',
     glyphMargin: true,
     lightbulb: {
       enabled: true,
     },
   }
-  
+
   const [evaluationResult, setEvaluationResult] = useState('Click "Evaluate" button to execute the Code...');
 
   const evaluateCode = async () => {
+    setEvaluationResult('Evaluation in progress..........');
+    setIsLoading(true); // Stop loading after evaluation is done
     try {
       const response = await fetch('http://localhost:3001/execute-java?className=HelloWorld', {
         method: 'POST',
@@ -125,6 +130,7 @@ const MonacoEditor = ({ filePath }: Props) => {
       });
 
       if (!response.ok) {
+        setIsLoading(false); // Stop loading after evaluation is done
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
@@ -132,39 +138,45 @@ const MonacoEditor = ({ filePath }: Props) => {
 
       // Assuming the server response contains fields `error` and `output`
       if (result.error) {
+        setIsLoading(false); // Stop loading after evaluation is done
         setCodeError(true)
-        setEvaluationResult(`Failed:> ${result.error}`);
+        setEvaluationResult(`${result.error}`);
       } else {
+        setIsLoading(false); // Stop loading after evaluation is done
         setCodeError(false)
-        setEvaluationResult(`Output:> ${result.output}`);
+        setEvaluationResult(`${result.output}`);
       }
     } catch (error) {
+      setIsLoading(false); // Stop loading after evaluation is done
       setCodeError(true)
       console.error("Failed to evaluate code:", error);
       setEvaluationResult(`Failed to evaluate code: ${error}`);
     }
   };
 
-  //update file path you file editor
-  return (
-    <><div ><button style={{ position: 'relative' }} className="btn btn-info" onClick={evaluateCode}>Execute</button>
-    <Editor
-      path={filePath}
-      height="75vh"
-      value={code}
+  
 
-      onChange={(newCode) => {
-        console.log(newCode)
-        if (newCode) {
-          setCode(newCode)
-        }
-      } }
-      options={editorCustomOptions}
-      loading={"Loading..."}
-      keepCurrentModel={true}
-      theme="vs-dark"
-      onMount={onMount} 
-      /><div style={{ backgroundColor: 'black', color: codeError ? '#FF6347' : 'white',  height: '90px' }}> {evaluationResult}</div></div></>
+  return (
+    <><div >{isLoading ? <img src="loading.gif" alt="Loading..." width="60px" height="40p" /> : <button style={{ position: 'relative' }} className="btn btn-info" onClick={evaluateCode}>
+      Execute
+    </button>}
+      <Editor
+        path={filePath}
+        height="75vh"
+        value={code}
+
+        onChange={(newCode) => {
+          console.log(newCode)
+          if (newCode) {
+            setCode(newCode)
+          }
+        }}
+        options={editorCustomOptions}
+        loading={"Loading..."}
+        keepCurrentModel={true}
+        theme={"vs-dark"}
+        onMount={onMount}
+      /><div style={{ backgroundColor: 'black', color: codeError ? '#FF6347' : 'white', height: '90px', whiteSpace: 'pre-wrap' }}>{evaluationResult}</div></div></>
   )
 }
 

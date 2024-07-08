@@ -4,40 +4,92 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>monaco-languageclient Examples</title>
+    <title>Online Editor/IDE Tryouts</title>
     <style>
         body {
             font-family: Helvetica, Arial, Sans-Serif;
+        }
+
+        a {
+            
+            text-decoration: none;
+            padding: 5px;
+            border: 1px solid blue;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        
+        a.blue {
+            background-color: blue;
+            color: white;
+        }
+        a.black {
+            background-color: black;
+            color: white;
+        }
+        table {
+            margin: 5px;
         }
     </style>
 </head>
 
 <body>
     <div style="padding: 5px">
-        <h1>Examples</h1>
+        <h1>Online Editor/IDE Tryouts</h1>
+        <h2>Editor</h2>
+        <a href="packages/examples/react-client/index.html" target="_blank" class="blue">Monaco Editor</a>
 
-        Please execute  <b><code>npm run start:example:server</code></b>  beforehand:<br>
-        <a href="packages/examples/client/index.html">Web Client for Node.js Language Server</a>
-        <br><br>
-        <a href="packages/examples/browser-lsp/index.html">Browser Language Client & Language Server in Web Worker</a>
-        <br><br>
-        <a href="packages/examples/browser/index.html">Browser Example</a>
-        <br><br>
-        <a href="packages/examples/react-client/index.html">React Client Example</a>
-        <br><br>
-        Please start  <b><code>npm run start:example:angular</code></b>  beforehand:<br>
-        <a href="http://localhost:4200">Angular Client Example (ng dev server)</a>
-		<br>
-        <h1>Verification</h1>
-
-        <h2>Webpack</h2>
-        Please start  <b><code>npm run start:verify:webpack</code></b>  beforehand:<br>
-        <a href="http://localhost:8081">Web Client for Node.js Language Server (webpack build)</a>
-        <br>
-
-        <h2>Vite</h2>
-        Please start  <b><code>npm run start:verify:vite</code></b>  beforehand:<br>
-        <a href="http://localhost:8082">Web Client for Node.js Language Server (vite build)</a>
+        <table border="1">
+            <tr>
+                <th>Advantages</th>
+                <th>Disadvantages</th>
+            </tr>
+            <tr>
+                <td>Rich Feature Set</td>
+                <td>Performance Overhead</td>
+            </tr>
+            <tr>
+                <td>Extensibility</td>
+                <td>Complexity in Integration</td>
+            </tr>
+            <tr>
+                <td>Consistency with VS Code</td>
+                <td>Overhead for Maintenance and Updates</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>Browser Compatibility</td>
+            </tr>
+        </table>
+        <h2>IDE</h2>
+        <!-- add a href to open vscode.html file in same window -->
+        <a href="vscode.html" target="_blank" class="black">VSCode Demo Edition</a>
+        <table border="1">
+            <tr>
+                <th>Advantages</th>
+                <th>Disadvantages</th>
+            </tr>
+            <tr>
+                <td>Multi Programming Languages Support</td>
+                <td>Dependency on Internet Connection</td>
+            </tr>
+            <tr>
+                <td>Accessibility</td>
+                <td>Performance</td>
+            </tr>
+            <tr>
+                <td>Integrated Development Environment</td>
+                <td>Limited Customization</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>Cost</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>Need addl Evaluation code>
+            </tr>
+        </table>
         <br>
     </div>
 </body>
