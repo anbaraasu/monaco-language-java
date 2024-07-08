@@ -32,7 +32,7 @@ export function launch(socket: IWebSocket) {
         "-jar",
         `${jdtPath}/jdt-language-server-1.9.0-202203031534/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar`,
         "-configuration",
-        `${jdtPath}/jdt-language-server-1.9.0-202203031534/config_linux`,
+        `${jdtPath}/jdt-language-server-1.9.0-202203031534/config_win`,
         "-data",
         `${jdtPath}`,
         "--add-modules=ALL-SYSTEM",

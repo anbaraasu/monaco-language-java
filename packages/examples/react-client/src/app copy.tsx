@@ -84,11 +84,11 @@ const MonacoEditor = ({ filePath }: Props) => {
   const hostname = "localhost"
   const urlPath = ""
   const port = "4000"
-  const codestr = `public class HelloWorld {
-    public static void main(String[] args) {
-      System.out.println("Hello, World!");
-    }
-}`
+  const codestr = `public class Main {
+      public static void main(String[] args) {
+          System.out.println("Hello, World!");
+      }
+  }`
   const [codeError, setCodeError] = useState(false)
   const [code, setCode] = useState(codestr)
   const onMount = (editor, monacoInstance) => {
@@ -112,11 +112,11 @@ const MonacoEditor = ({ filePath }: Props) => {
     },
   }
   
-  const [evaluationResult, setEvaluationResult] = useState('Click "Evaluate" button to execute the Code...');
+  const [evaluationResult, setEvaluationResult] = useState('');
 
   const evaluateCode = async () => {
     try {
-      const response = await fetch('http://localhost:3001/execute-java?className=HelloWorld', {
+      const response = await fetch('http://localhost:3001/execute-java', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -133,10 +133,10 @@ const MonacoEditor = ({ filePath }: Props) => {
       // Assuming the server response contains fields `error` and `output`
       if (result.error) {
         setCodeError(true)
-        setEvaluationResult(`Failed:> ${result.error}`);
+        setEvaluationResult(`${result.error}`);
       } else {
         setCodeError(false)
-        setEvaluationResult(`Output:> ${result.output}`);
+        setEvaluationResult(`${result.output}`);
       }
     } catch (error) {
       setCodeError(true)
@@ -147,14 +147,12 @@ const MonacoEditor = ({ filePath }: Props) => {
 
   //update file path you file editor
   return (
-    <><div ><button style={{ position: 'relative' }} className="btn btn-info" onClick={evaluateCode}>Execute</button>
+    <><div style={{ position: 'relative', top: '-20px'}}><button style={{ position: 'relative', top: '-20px', float: 'right' }} className="btn btn-info" onClick={evaluateCode}>Execute</button>
     <Editor
       path={filePath}
-      height="75vh"
+      height="60vh"
       value={code}
-
       onChange={(newCode) => {
-        console.log(newCode)
         if (newCode) {
           setCode(newCode)
         }
@@ -163,8 +161,7 @@ const MonacoEditor = ({ filePath }: Props) => {
       loading={"Loading..."}
       keepCurrentModel={true}
       theme="vs-dark"
-      onMount={onMount} 
-      /><div style={{ backgroundColor: 'black', color: codeError ? '#FF6347' : 'white',  height: '90px' }}> {evaluationResult}</div></div></>
+      onMount={onMount} /><div style={{ backgroundColor: 'black', color: codeError ? '#FFCCCC' : 'white',  height: '90px' }}>Result: {evaluationResult}</div></div></>
   )
 }
 
