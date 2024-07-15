@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../code-arena-server"
+		},
+		{
+			"path": "../../moodle/server/moodle/moodle-php"
 		}
 	],
 	"settings": {}

@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react"
+import Sidebar from "./components/sidebar.js";
+import styled from "@emotion/styled";
+import { Type, File, Directory, findFileByName } from "./utils/file-manager.js";
+import "./App.css";
+import { FileTree } from "./components/file-tree.js";
+
 import * as monaco from "monaco-editor"
 import Editor, { loader } from "@monaco-editor/react"
 import "monaco-editor/esm/vs/editor/editor.all.js"
-import "./App.css";
+
 import "monaco-editor/esm/vs/editor/standalone/browser/accessibilityHelp/accessibilityHelp.js"
 import "monaco-editor/esm/vs/editor/standalone/browser/inspectTokens/inspectTokens.js"
 import "monaco-editor/esm/vs/editor/standalone/browser/iPadShowKeyboard/iPadShowKeyboard.js"
@@ -20,7 +26,6 @@ import {
   ErrorAction,
   MonacoLanguageClient,
   MonacoServices,
-  ProposedFeatures,
 } from "monaco-languageclient"
 import normalizeUrl from "normalize-url"
 import {
@@ -76,9 +81,39 @@ function createWebSocket(url: string) {
   }
 }
 
+interface Props {
+  filePath: string
+}
+
+const MonacoEditor = ({ filePath }: Props) => {
+  const Main = styled.main`
+  display: flex;
+`;
 
 
-const MonacoEditor = ({ filePath, multilineString}) => {
+  const dummyDir: Directory = {
+    id: "1",
+    name: "loading...",
+    type: Type.DUMMY,
+    parentId: undefined,
+    depth: 0,
+    dirs: [],
+    files: [
+      {
+        id: "2",
+        name: "HelloWorld.java",
+        type: Type.FILE,
+        parentId: "1",
+        depth: 1,
+        content: ""
+      }
+    ]
+  };
+
+
+  const [rootDir, setRootDir] = useState(dummyDir);
+  // `const [selectedFile, setSelectedFile] = useState<File | undefined>(undefined);
+  // const onSelect = (file: File) => setSelectedFile(file);`
   // filepath should be server system file path
   // <ReactMonacoEditor filePath="file://C:/Temp/monaco-language-java/packages/examples/react-client/src/HelloWorld.java" /> 
   //<ReactMonacoEditor filePath="{selectedFile}" />
@@ -119,7 +154,6 @@ const MonacoEditor = ({ filePath, multilineString}) => {
   const [evaluationResult, setEvaluationResult] = useState('Click "Evaluate" button to execute the Code...');
 
   const evaluateCode = async () => {
-    setCodeError(false);
     setEvaluationResult('Evaluation in progress..........');
     setIsLoading(true); // Stop loading after evaluation is done
     try {
@@ -145,7 +179,7 @@ const MonacoEditor = ({ filePath, multilineString}) => {
         setEvaluationResult(`${result.error}`);
       } else {
         setIsLoading(false); // Stop loading after evaluation is done
-        setCodeError(false);
+        setCodeError(false)
         setEvaluationResult(`${result.output}`);
       }
     } catch (error) {
@@ -156,21 +190,31 @@ const MonacoEditor = ({ filePath, multilineString}) => {
     }
   };
 
-  
+
 
   return (
-    <><div >{isLoading ? <img src="loading.gif" alt="Loading..." style={{ backgroundColor: 'transparent' }} width="60px" height="40px" /> : <button style={{ position: 'relative' }} className="btn btn-info" onClick={evaluateCode}>
+    <><div >{isLoading ? <img src="loading.gif" alt="Loading..." width="60px" height="40p" /> : <button style={{ position: 'relative' }} className="btn btn-info" onClick={evaluateCode}>
       Execute
     </button>}
-      
+      <div>
+        <Main>
+          <Sidebar>
+            <FileTree
+              rootDir={rootDir}
+              selectedFile={selectedFile}
+              onSelect={onSelect}
+            />
+          </Sidebar>
+
           <Editor
             path={filePath}
             height="75vh"
             value={code}
 
             onChange={(newCode) => {
+              console.log(newCode)
               if (newCode) {
-                setCode(newCode);
+                setCode(newCode)
               }
             }}
             options={editorCustomOptions}
@@ -178,8 +222,8 @@ const MonacoEditor = ({ filePath, multilineString}) => {
             keepCurrentModel={true}
             theme={"vs-dark"}
             onMount={onMount}
-          />
-      <div style={{ backgroundColor: 'black', color: codeError ? '#FF6347' : 'white', height: '90px', whiteSpace: 'pre-wrap', overflow: 'auto' }}>{evaluationResult}</div></div></>
+          /></Main></div>
+      <div style={{ backgroundColor: 'black', color: codeError ? '#FF6347' : 'white', height: '90px', whiteSpace: 'pre-wrap' }}>{evaluationResult}</div></div></>
   )
 }
 

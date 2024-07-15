@@ -8,3 +8,4 @@ dist
 *.tsbuildinfo
 packages/examples/server/jspServer/*
 
+**/node_modules
